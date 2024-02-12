@@ -1,98 +1,148 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, Modal} from 'react-native';
+import {View, Text, TextInput, Button} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {format, differenceInDays, differenceInMonths} from 'date-fns';
+import {
+  differenceInMonths,
+  differenceInWeeks,
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+  add,
+} from 'date-fns';
 
-const BirthdayReminderApp = () => {
-  const [isDobPickerVisible, setDobPickerVisibility] = useState(false);
-  const [isCurrentDatePickerVisible, setCurrentDatePickerVisibility] =
-    useState(false);
-  const [dob, setDob] = useState(null);
-  const [currentDate, setCurrentDate] = useState(null);
+const AgeCalculator = () => {
+  const [dob, setDob] = useState('');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [currentAge, setCurrentAge] = useState(null);
-  const [daysUntilNextBirthday, setDaysUntilNextBirthday] = useState(null);
-  const [monthsUntilNextBirthday, setMonthsUntilNextBirthday] = useState(null);
-  const [isDetailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [totalMonths, setTotalMonths] = useState(null);
+  const [totalWeeks, setTotalWeeks] = useState(null);
+  const [totalDays, setTotalDays] = useState(null);
+  const [totalHours, setTotalHours] = useState(null);
+  const [totalMinutes, setTotalMinutes] = useState(null);
+  const [totalSeconds, setTotalSeconds] = useState(null);
+  const [nextBirthday, setNextBirthday] = useState(null);
+  const [subscriptionToNextBirthday, setSubscriptionToNextBirthday] =
+    useState(null);
+  const [bornOnDay, setBornOnDay] = useState(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = selectedDate => {
+    hideDatePicker();
+    setDob(selectedDate);
+  };
 
   useEffect(() => {
-    if (dob && currentDate) {
+    if (dob) {
       calculateAge();
-      calculateDaysUntilNextBirthday();
-      calculateMonthsUntilNextBirthday();
+      calculateTotalMonths();
+      calculateTotalWeeks();
+      calculateTotalDays();
+      calculateTotalHours();
+      calculateTotalMinutes();
+      calculateTotalSeconds();
+      calculateNextBirthday();
+      calculateSubscriptionToNextBirthday();
+      calculateBornOnDay();
     }
-  }, [dob, currentDate]);
-
-  const showDobPicker = () => {
-    setDobPickerVisibility(true);
-  };
-
-  const hideDobPicker = () => {
-    setDobPickerVisibility(false);
-  };
-
-  const showCurrentDatePicker = () => {
-    setCurrentDatePickerVisibility(true);
-  };
-
-  const hideCurrentDatePicker = () => {
-    setCurrentDatePickerVisibility(false);
-  };
-
-  const handleDobConfirm = date => {
-    hideDobPicker();
-    setDob(date);
-  };
-
-  const handleCurrentDateConfirm = date => {
-    hideCurrentDatePicker();
-    setCurrentDate(date);
-  };
+  }, [dob]);
 
   const calculateAge = () => {
     const birthDate = new Date(dob);
-    const today = new Date(currentDate);
+    const today = new Date();
 
-    const ageDiff = today.getFullYear() - birthDate.getFullYear();
-    const hasBirthdayOccurred =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() &&
-        today.getDate() >= birthDate.getDate());
-
-    const finalAge = hasBirthdayOccurred ? ageDiff : ageDiff - 1;
-    setCurrentAge(finalAge);
+    const ageDiff = differenceInMonths(today, birthDate) / 12;
+    setCurrentAge(ageDiff);
   };
 
-  const calculateDaysUntilNextBirthday = () => {
-    const today = new Date(currentDate);
-    const nextBirthday = new Date(
-      today.getFullYear(),
-      dob.getMonth(),
-      dob.getDate(),
-    );
+  const calculateTotalMonths = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
 
-    if (today > nextBirthday) {
-      nextBirthday.setFullYear(today.getFullYear() + 1);
-    }
-
-    const daysUntilNext = differenceInDays(nextBirthday, today);
-    setDaysUntilNextBirthday(daysUntilNext);
+    const monthsDiff = differenceInMonths(today, birthDate);
+    setTotalMonths(monthsDiff);
   };
 
-  const calculateMonthsUntilNextBirthday = () => {
-    const today = new Date(currentDate);
-    const nextBirthday = new Date(
-      today.getFullYear(),
-      dob.getMonth(),
-      dob.getDate(),
+  const calculateTotalWeeks = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    const weeksDiff = differenceInWeeks(today, birthDate);
+    setTotalWeeks(weeksDiff);
+  };
+
+  const calculateTotalDays = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    const daysDiff = differenceInDays(today, birthDate);
+    setTotalDays(daysDiff);
+  };
+
+  const calculateTotalHours = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    const hoursDiff = differenceInHours(today, birthDate);
+    setTotalHours(hoursDiff);
+  };
+
+  const calculateTotalMinutes = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    const minutesDiff = differenceInMinutes(today, birthDate);
+    setTotalMinutes(minutesDiff);
+  };
+
+  const calculateTotalSeconds = () => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    const secondsDiff = differenceInSeconds(today, birthDate);
+    setTotalSeconds(secondsDiff);
+  };
+
+  const calculateNextBirthday = () => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+
+    let nextBirthdayDate = add(
+      new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()),
+      {years: 1},
     );
 
-    if (today > nextBirthday) {
-      nextBirthday.setFullYear(today.getFullYear() + 1);
+    if (today > nextBirthdayDate) {
+      nextBirthdayDate = add(
+        new Date(
+          today.getFullYear() + 1,
+          birthDate.getMonth(),
+          birthDate.getDate(),
+        ),
+        {years: 1},
+      );
     }
 
-    const monthsUntilNext = differenceInMonths(nextBirthday, today);
-    setMonthsUntilNextBirthday(monthsUntilNext);
+    const daysLeft = differenceInDays(nextBirthdayDate, today);
+    setNextBirthday(daysLeft);
+  };
+
+  const calculateSubscriptionToNextBirthday = () => {
+    if (nextBirthday !== null) {
+      const months = Math.floor(nextBirthday / 30);
+      const days = nextBirthday % 30;
+
+      setSubscriptionToNextBirthday(
+        `${months} months and ${days} days until your next birthday`,
+      );
+    }
   };
 
   const calculateBornOnDay = () => {
@@ -108,87 +158,54 @@ const BirthdayReminderApp = () => {
     ];
 
     const bornDay = daysOfWeek[birthDate.getDay()];
-    return bornDay;
-  };
-
-  const openDetailsModal = () => {
-    setDetailsModalVisible(true);
-  };
-
-  const closeDetailsModal = () => {
-    setDetailsModalVisible(false);
+    setBornOnDay(bornDay);
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <View style={{marginBottom: 20}}>
-        <Text style={{fontSize: 20}}>
-          {dob
-            ? `Date of Birth: ${format(dob, 'MMMM d, yyyy')}`
-            : 'Select Date of Birth'}
-        </Text>
-        <Button title="Select Date of Birth" onPress={showDobPicker} />
-        <DateTimePickerModal
-          isVisible={isDobPickerVisible}
-          mode="date"
-          onConfirm={handleDobConfirm}
-          onCancel={hideDobPicker}
-        />
-      </View>
-
-      <View style={{marginBottom: 20}}>
-        <Text style={{fontSize: 20}}>
-          {currentDate
-            ? `Current Date: ${format(currentDate, 'MMMM d, yyyy')}`
-            : 'Select Current Date'}
-        </Text>
-        <Button title="Select Current Date" onPress={showCurrentDatePicker} />
-        <DateTimePickerModal
-          isVisible={isCurrentDatePickerVisible}
-          mode="date"
-          onConfirm={handleCurrentDateConfirm}
-          onCancel={hideCurrentDatePicker}
-        />
-      </View>
-
-      <Button
-        title="Calculate Age"
-        onPress={openDetailsModal}
-        disabled={!dob || !currentDate}
+    <View>
+      <Text>Enter your Date of Birth:</Text>
+      <Button title="Pick a date" onPress={showDatePicker} />
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
       />
 
-      <Modal
-        visible={isDetailsModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={closeDetailsModal}>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <View
-            style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
-            <Text style={{fontSize: 18, marginBottom: 10}}>
-              Age Information:
-            </Text>
-            <Text style={{fontSize: 16}}>
-              {`Your current age is: ${currentAge} years`}
-            </Text>
-            <Text style={{fontSize: 16}}>
-              {`You were born on a ${calculateBornOnDay()}`}
-            </Text>
-            <Text style={{fontSize: 18, marginTop: 20}}>
-              Next Birthday Countdown:
-            </Text>
-            <Text style={{fontSize: 16}}>
-              {`Days until your next birthday: ${daysUntilNextBirthday} days`}
-            </Text>
-            <Text style={{fontSize: 16}}>
-              {`Months and days until your next birthday: ${monthsUntilNextBirthday} months`}
-            </Text>
-            <Button title="Close" onPress={closeDetailsModal} />
-          </View>
-        </View>
-      </Modal>
+      {currentAge !== null && (
+        <Text>Your current age is: {currentAge.toFixed(2)} years</Text>
+      )}
+      {totalMonths !== null && (
+        <Text>Your current age in total months is: {totalMonths} months</Text>
+      )}
+      {totalWeeks !== null && (
+        <Text>Your current age in total weeks is: {totalWeeks} weeks</Text>
+      )}
+      {totalDays !== null && (
+        <Text>Your current age in total days is: {totalDays} days</Text>
+      )}
+      {totalHours !== null && (
+        <Text>Your current age in total hours is: {totalHours} hours</Text>
+      )}
+      {totalMinutes !== null && (
+        <Text>
+          Your current age in total minutes is: {totalMinutes} minutes
+        </Text>
+      )}
+      {totalSeconds !== null && (
+        <Text>
+          Your current age in total seconds is: {totalSeconds} seconds
+        </Text>
+      )}
+      {nextBirthday !== null && (
+        <Text>Days until your next birthday: {nextBirthday} days</Text>
+      )}
+      {subscriptionToNextBirthday !== null && (
+        <Text>Subscription to next birthday: {subscriptionToNextBirthday}</Text>
+      )}
+      {bornOnDay !== null && <Text>You were born on a {bornOnDay}</Text>}
     </View>
   );
 };
 
-export default BirthdayReminderApp;
+export default AgeCalculator;

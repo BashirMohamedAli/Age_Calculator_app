@@ -20,6 +20,7 @@ const BottomStack = () => (
       name="Age Cal"
       component={AgeCal}
       options={{
+        title: 'Age Calculator',
         tabBarIcon: ({color, size}) => (
           <Icon name="calculator" color={color} size={size} />
         ),
