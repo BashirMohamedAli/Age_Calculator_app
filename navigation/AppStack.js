@@ -10,6 +10,7 @@ import BabyAge from '../screens/BabyAge';
 import WorkingDay from '../screens/WorkingDay';
 import Others from '../screens/Others';
 import AgeComparison from '../screens/AgeComparison';
+import BMIScreen from '../screens/BMI';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -47,6 +48,15 @@ const BottomStack = () => (
     <Tab.Screen
       name="Other"
       component={Others}
+      options={{
+        tabBarIcon: ({color, size}) => (
+          <Icon name="ellipsis-h" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="BMI"
+      component={BMIScreen}
       options={{
         tabBarIcon: ({color, size}) => (
           <Icon name="ellipsis-h" color={color} size={size} />
