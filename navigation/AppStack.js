@@ -10,6 +10,7 @@ import BabyAge from '../screens/BabyAge';
 import WorkingDay from '../screens/WorkingDay';
 import Others from '../screens/Others';
 import AgeComparison from '../screens/AgeComparison';
+import AgeDetailsScreen from '../screens/AgeDetailsScreen';
 import BMIScreen from '../screens/BMI';
 
 const Tab = createBottomTabNavigator();
@@ -76,6 +77,11 @@ const AppStack = () => {
           options={{header: () => null}}
         />
         <Stack.Screen name="AgeComparison" component={AgeComparison} />
+        <Stack.Screen
+          name="AgeDetailsScreen"
+          component={AgeDetailsScreen}
+          options={{title: 'Age Calculator'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

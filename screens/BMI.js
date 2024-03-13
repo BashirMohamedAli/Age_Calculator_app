@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
-import {Card} from 'react-native-elements';
+import {Card} from '@rneui/themed';
 import {LineChart} from 'react-native-chart-kit';
 import {Picker} from '@react-native-picker/picker';
 
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   card: {
     marginVertical: 10,
     borderRadius: 10,
-    padding: 15,
+    padding: 25,
   },
   label: {
     fontSize: 16,
